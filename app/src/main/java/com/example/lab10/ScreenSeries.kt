@@ -36,7 +36,7 @@ import kotlinx.coroutines.delay
 
 
 @Composable
-fun ContenidoSeriesListado(navController: NavHostController, servicio: SerieApiService) {
+fun ContenidoSeriesListado(navController: NavHostController) {
     var listaSeries: SnapshotStateList<SerieModel> = remember { mutableStateListOf() }
     LaunchedEffect(Unit) {
         val listado = servicio.selectSeries()
@@ -121,7 +121,7 @@ fun ContenidoSeriesListado(navController: NavHostController, servicio: SerieApiS
 }
 
 @Composable
-fun ContenidoSerieEditar(navController: NavHostController, servicio: SerieApiService, pid: Int = 0 ) {
+fun ContenidoSerieEditar(navController: NavHostController, servicio: Int, pid: Int = 0 ) {
     var id by remember { mutableStateOf<Int>(pid) }
     var name by remember { mutableStateOf<String?>("") }
     var release_date by remember { mutableStateOf<String?>("") }
@@ -201,7 +201,7 @@ fun ContenidoSerieEditar(navController: NavHostController, servicio: SerieApiSer
 
 
 @Composable
-fun ContenidoSerieEliminar(navController: NavHostController, servicio: SerieApiService, id: Int) {
+fun ContenidoSerieEliminar(navController: NavHostController, servicio: SerieApiService) {
     var showDialog by remember { mutableStateOf(true) }
     var borrar by remember { mutableStateOf(false) }
 

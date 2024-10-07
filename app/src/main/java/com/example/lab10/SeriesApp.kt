@@ -129,7 +129,7 @@ fun Contenido(
             startDestination = "inicio"
         ) {
             composable("inicio") { PageInicio(navController) }
-            composable("series") { ContenidoSeriesListado(navController, servicio) }
+            composable("series") { ContenidoSeriesListado(navController) }
             composable("serieNuevo") {
                 ContenidoSerieEditar(navController, servicio, 0)
             }
@@ -141,14 +141,14 @@ fun Contenido(
             composable("serieDel/{id}", arguments = listOf(
                 navArgument("id") { type = NavType.IntType }
             )) {
-                ContenidoSerieEliminar(navController, servicio, it.arguments!!.getInt("id"))
+                ContenidoSerieEliminar(navController, servicio)
             }
         }
     }
 }
 
 @Composable
-fun PageInicio(navController: NavHostController) {
+fun NavHostController.PageInicio() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -156,19 +156,19 @@ fun PageInicio(navController: NavHostController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = { navController.navigate("series") }) {
+        Button(onClick = { navigate("series") }) {
             Text(text = "Ir a Listado de Series")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { navController.navigate("serieNuevo") }) {
+        Button(onClick = { navigate("serieNuevo") }) {
             Text(text = "Agregar Nueva Serie")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { navController.navigate("serieVer/1") }) { // Cambia "1" por el id deseado
+        Button(onClick = { navigate("serieVer/1") }) { // Cambia "1" por el id deseado
             Text(text = "Ver Serie")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { navController.navigate("serieDel/1") }) { // Cambia "1" por el id deseado
+        Button(onClick = { navigate("serieDel/1") }) { // Cambia "1" por el id deseado
             Text(text = "Eliminar Serie")
         }
     }
