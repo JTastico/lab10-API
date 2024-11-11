@@ -1,18 +1,13 @@
 package com.example.lab10
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -25,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -126,52 +120,23 @@ fun Contenido(
     ) {
         NavHost(
             navController = navController,
-            startDestination = "inicio"
+            startDestination = "inicio" // Ruta de inicio
         ) {
-            composable("inicio") { PageInicio(navController) }
-            composable("series") { ContenidoSeriesListado(navController) }
+            composable("inicio"){}
+            composable("series") { ContenidoSeriesListado(navController, servicio) }
             composable("serieNuevo") {
-                ContenidoSerieEditar(navController, servicio, 0)
+                ContenidoSerieEditar(navController, servicio, 0 )
             }
             composable("serieVer/{id}", arguments = listOf(
-                navArgument("id") { type = NavType.IntType }
-            )) {
+                navArgument("id") { type = NavType.IntType} )
+            ) {
                 ContenidoSerieEditar(navController, servicio, it.arguments!!.getInt("id"))
             }
             composable("serieDel/{id}", arguments = listOf(
-                navArgument("id") { type = NavType.IntType }
-            )) {
-                ContenidoSerieEliminar(navController, servicio)
+                navArgument("id") { type = NavType.IntType} )
+            ) {
+                ContenidoSerieEliminar(navController, servicio, it.arguments!!.getInt("id"))
             }
         }
     }
 }
-
-@Composable
-fun NavHostController.PageInicio() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(onClick = { navigate("series") }) {
-            Text(text = "Ir a Listado de Series")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { navigate("serieNuevo") }) {
-            Text(text = "Agregar Nueva Serie")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { navigate("serieVer/1") }) { // Cambia "1" por el id deseado
-            Text(text = "Ver Serie")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { navigate("serieDel/1") }) { // Cambia "1" por el id deseado
-            Text(text = "Eliminar Serie")
-        }
-    }
-}
-
-

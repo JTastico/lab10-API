@@ -3,92 +3,62 @@ package com.example.lab10
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.lab10.ui.theme.Lab10Theme
+import androidx.navigation.navArgument
+import com.example.lab10.data.RetrofitInstance // Importa el objeto RetrofitInstance
+import com.example.lab10.data.SerieApiService
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Obtén la instancia de SerieApiService desde RetrofitInstance
+        val servicio = RetrofitInstance.api
+
         setContent {
-            Lab10Theme {
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    AppNavigation()
-                }
-            }
+            MainScreen(servicio)
         }
     }
 }
 
 @Composable
-fun AppNavigation() {
+fun MainScreen(servicio: SerieApiService) {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "inicio") {
-        composable("inicio") { PageInicio(navController) }
-        composable("series") { ContenidoSeriesListado(navController) }
-        composable("serieNuevo") { ContenidoSerieEditar(navController, 0) }
-        composable("serieVer/{id}") { backStackEntry ->
-            ContenidoSerieEditar(navController, backStackEntry.arguments?.getInt("id") ?: 0)
-        }
-        composable("serieDel/{id}") { backStackEntry ->
-            ContenidoSerieEliminar(navController, backStackEntry.arguments?.getInt("id") ?: 0)
-        }
-        composable("seriesApp") { SeriesApp() }
-    }
-}
-
-fun ContenidoSerieEliminar(navController: NavHostController, servicio: Int) {
-
-}
-
-@Composable
-fun PageInicio(navController: NavHostController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
-        Button(onClick = { navController.navigate("series") }) {
-            Text(text = "Ir a Listado de Series")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { navController.navigate("serieNuevo") }) {
-            Text(text = "Agregar Nueva Serie")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { navController.navigate("serieVer/1") }) { // Cambia "1" por el id deseado
-            Text(text = "Ver Serie")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { navController.navigate("serieDel/1") }) { // Cambia "1" por el id deseado
-            Text(text = "Eliminar Serie")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        // Botón que redirige a SeriesApp
-        Button(onClick = { navController.navigate("seriesApp") }) {
-            Text(text = "Ir a Series App")
-        }
-    }
-}
+        NavHost(
+            navController = navController,
+            startDestination = "series"
+        ) {
+            // MainActivity.kt
+            composable("series") {
+                ContenidoSeriesListado(navController = navController, servicio = servicio) // Mantén este si `ContenidoSeriesListado` usa `servicio`
+            }
+            composable(
+                "serieVer/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val id = backStackEntry.arguments?.getInt("id") ?: 0
+                ContenidoSerieEditar(navController = navController, servicio = servicio, pid = id)
+            }
+            composable(
+                "serieDel/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val id = backStackEntry.arguments?.getInt("id") ?: 0
+                ContenidoSerieEliminar(navController = navController, servicio = servicio, id = id)
+            }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Lab10Theme {
-        PageInicio(navController = rememberNavController())
+        }
     }
 }
