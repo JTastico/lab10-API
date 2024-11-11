@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,21 +38,33 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.lab10.data.SerieApiService
 import com.example.lab10.data.SerieModel
-import com.example.lab10.ui.theme.*
+
+//val LightBlue = Color(0xFF80D8FF)
+//val MediumBlue = Color(0xFF40C4FF)
+//val DarkBlue = Color(0xFF01579B)
+//val DarkerBlue = Color(0xFF003C8F)
+//val BlueGrey = Color(0xFF607D8B)
 
 @Composable
 fun ContenidoSeriesListado(navController: NavHostController, servicio: SerieApiService) {
     var listaSeries: SnapshotStateList<SerieModel> = remember { mutableStateListOf() }
     LaunchedEffect(Unit) {
         val listado = servicio.selectSeries()
-        listado.forEach { listaSeries.add(it) }
+        listaSeries.addAll(listado)
     }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .background(Color(0xFFF5F5F5))
+    ) {
         Button(
             onClick = { navController.navigate("crearSerie") },
-            modifier = Modifier.padding(16.dp),
-            colors = ButtonDefaults.buttonColors(MediumBlue)
+            modifier = Modifier
+                .padding(vertical = 16.dp)
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(Color(0xFF01579B))
         ) {
             Text("Crear Nueva Serie", color = Color.White)
         }
@@ -61,44 +74,44 @@ fun ContenidoSeriesListado(navController: NavHostController, servicio: SerieApiS
                 Row(
                     modifier = Modifier
                         .fillParentMaxWidth()
-                        .padding(bottom = 8.dp),
+                        .padding(vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("SERIE", fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(0.7f))
-                    Text("Categoria", fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(0.7f))
-                    Text("Accion", fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(0.5f))
+                    Text("SERIE", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+                    Text("CATEGORÍA", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+                    Text("ACCIÓN", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
                 }
             }
 
             items(listaSeries) { item ->
                 Row(
                     modifier = Modifier
-                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
                         .fillMaxWidth()
-                        .background(Color(0xFFE3F2FD))
-                        .padding(16.dp),
+                        .padding(vertical = 8.dp)
+                        .background(Color.White)
+                        .padding(12.dp)
+                        .shadow(1.dp, shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = item.name, fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(0.6f))
-                    Text(text = item.category, fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(0.7f))
+                    Text(text = item.name, fontSize = 16.sp, modifier = Modifier.weight(1f))
+                    Text(text = item.category, fontSize = 16.sp, modifier = Modifier.weight(1f))
                     IconButton(
                         onClick = { navController.navigate("serieVer/${item.id}") },
                         Modifier.weight(0.2f)
                     ) {
-                        Icon(imageVector = Icons.Outlined.Edit, contentDescription = "Ver", tint = MediumBlue)
+                        Icon(imageVector = Icons.Outlined.Edit, contentDescription = "Ver", tint = Color(0xFF00796B))
                     }
                     IconButton(
                         onClick = { navController.navigate("serieDel/${item.id}") },
-                        Modifier.weight(0.3f)
+                        Modifier.weight(0.2f)
                     ) {
-                        Icon(imageVector = Icons.Outlined.Delete, contentDescription = "Eliminar", tint = MediumBlue)
+                        Icon(imageVector = Icons.Outlined.Delete, contentDescription = "Eliminar", tint = Color(0xFFB71C1C))
                     }
                 }
             }
         }
     }
 }
-
 
 @Composable
 fun ContenidoSerieEditar(navController: NavHostController, servicio: SerieApiService, pid: Int = 0) {
@@ -121,49 +134,48 @@ fun ContenidoSerieEditar(navController: NavHostController, servicio: SerieApiSer
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        TextField(
-            value = id.toString(),
-            onValueChange = {},
-            label = { Text("ID (solo lectura)") },
-            readOnly = true,
-            singleLine = true,
-            modifier = Modifier.background(MediumBlue.copy(alpha = 0.1f))
-        )
-        TextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Name") },
-            singleLine = true,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
-        TextField(
-            value = release_date,
-            onValueChange = { release_date = it },
-            label = { Text("Release Date") },
-            singleLine = true,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
-        TextField(
-            value = rating,
-            onValueChange = { rating = it },
-            label = { Text("Rating") },
-            singleLine = true,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
-        TextField(
-            value = category,
-            onValueChange = { category = it },
-            label = { Text("Category") },
-            singleLine = true,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .background(Color(0xFFF5F5F5))
+    ) {
+        listOf("ID (solo lectura)", "Name", "Release Date", "Rating", "Category").forEach { label ->
+            TextField(
+                value = when (label) {
+                    "ID (solo lectura)" -> id.toString()
+                    "Name" -> name
+                    "Release Date" -> release_date
+                    "Rating" -> rating
+                    "Category" -> category
+                    else -> ""
+                },
+                onValueChange = {
+                    when (label) {
+                        "Name" -> name = it
+                        "Release Date" -> release_date = it
+                        "Rating" -> rating = it
+                        "Category" -> category = it
+                    }
+                },
+                label = { Text(label) },
+                singleLine = true,
+                readOnly = label == "ID (solo lectura)",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .background(Color.White, shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
+            )
+        }
+
         Button(
             onClick = { grabar = true },
-            modifier = Modifier.padding(top = 16.dp),
-            colors = ButtonDefaults.buttonColors(DarkBlue)
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(Color(0xFF01579B))
         ) {
-            Text("Grabar", color = Color.White)
+            Text("Guardar Cambios", color = Color.White)
         }
     }
 
@@ -185,8 +197,6 @@ fun ContenidoSerieEditar(navController: NavHostController, servicio: SerieApiSer
     }
 }
 
-
-
 @Composable
 fun ContenidoSerieEliminar(navController: NavHostController, servicio: SerieApiService, id: Int) {
     var showDialog by remember { mutableStateOf(true) }
@@ -194,29 +204,35 @@ fun ContenidoSerieEliminar(navController: NavHostController, servicio: SerieApiS
 
     if (showDialog) {
         AlertDialog(
-            onDismissRequest = { showDialog = false },
-            title = { Text(text = "Confirmar Eliminación") },
-            text = {  Text("¿Está seguro de eliminar la Serie?") },
-            confirmButton = {
+            { showDialog = false }, {
                 Button(
                     onClick = {
                         showDialog = false
                         borrar = true
-                    } ) {
-                    Text("Aceptar")
+                    },
+                    colors = ButtonDefaults.buttonColors(Color(0xFFB71C1C))
+                ) {
+                    Text("Aceptar", color = Color.White)
                 }
             },
+            title = { Text(text = "Confirmar Eliminación", color = Color(0xFF01579B), fontWeight = FontWeight.Bold) },
+            text = { Text("¿Está seguro de eliminar la Serie?") },
             dismissButton = {
-                Button( onClick = { showDialog = false } ) {
-                    Text("Cancelar")
-                    navController.navigate("series")
+                Button(
+                    onClick = {
+                        showDialog = false
+                        navController.navigate("series")
+                    },
+                    colors = ButtonDefaults.buttonColors(Color(0xFF757575))
+                ) {
+                    Text("Cancelar", color = Color.White)
                 }
-            }
+            },
         )
     }
+
     if (borrar) {
         LaunchedEffect(Unit) {
-            // val objSerie = servicio.selectSerie(id.toString())
             servicio.deleteSerie(id.toString())
             borrar = false
             navController.navigate("series")
@@ -236,43 +252,52 @@ fun ContenidoSerieCrear(navController: NavHostController, servicio: SerieApiServ
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
+            .background(Color(0xFFF5F5F5))
     ) {
-        TextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Nombre") },
-            singleLine = true
-        )
-        TextField(
-            value = release_date,
-            onValueChange = { release_date = it },
-            label = { Text("AAAA-MM-DD") },
-            singleLine = true
-        )
-        TextField(
-            value = rating,
-            onValueChange = { rating = it },
-            label = { Text("Rating") },
-            singleLine = true
-        )
-        TextField(
-            value = category,
-            onValueChange = { category = it },
-            label = { Text("Category") },
-            singleLine = true
-        )
-        Button(onClick = { crear = true }) {
-            Text("Crear", fontSize = 16.sp)
+        listOf("Nombre", "Fecha de Lanzamiento (AAAA-MM-DD)", "Rating", "Categoría").forEach { label ->
+            TextField(
+                value = when (label) {
+                    "Nombre" -> name
+                    "Fecha de Lanzamiento (AAAA-MM-DD)" -> release_date
+                    "Rating" -> rating
+                    "Categoría" -> category
+                    else -> ""
+                },
+                onValueChange = {
+                    when (label) {
+                        "Nombre" -> name = it
+                        "Fecha de Lanzamiento (AAAA-MM-DD)" -> release_date = it
+                        "Rating" -> rating = it
+                        "Categoría" -> category = it
+                    }
+                },
+                label = { Text(label) },
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .background(Color.White, shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
+            )
+        }
+
+        Button(
+            onClick = { crear = true },
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(Color(0xFF01579B))
+        ) {
+            Text("Crear Serie", color = Color.White)
         }
     }
 
     if (crear) {
-        val nuevaSerie = SerieModel(0, name, release_date, rating.toInt(), category)  // El id será generado por el backend
+        val nuevaSerie = SerieModel(0, name, release_date, rating.toInt(), category)
         LaunchedEffect(crear) {
             try {
                 servicio.insertSerie(nuevaSerie)
                 crear = false
-                navController.navigate("series")  // Regresar a la lista de series después de crear
+                navController.navigate("series")
             } catch (e: Exception) {
                 Log.e("Error", "Error al crear la serie: ${e.message}")
             }
