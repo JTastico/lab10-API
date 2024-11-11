@@ -23,6 +23,7 @@ class MainActivity : ComponentActivity() {
         // Obtén la instancia de SerieApiService desde RetrofitInstance
         val servicio = RetrofitInstance.api
 
+
         setContent {
             MainScreen(servicio)
         }
@@ -58,7 +59,9 @@ fun MainScreen(servicio: SerieApiService) {
                 val id = backStackEntry.arguments?.getInt("id") ?: 0
                 ContenidoSerieEliminar(navController = navController, servicio = servicio, id = id)
             }
-
+            composable("crearSerie") {
+                ContenidoSerieCrear(navController = navController, servicio = servicio)
+            }
         }
     }
 }

@@ -14,7 +14,13 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import androidx.compose.ui.graphics.Color
 
+val LightBlue = Color(0xFF80D8FF)
+val MediumBlue = Color(0xFF40C4FF)
+val DarkBlue = Color(0xFF01579B)
+val DarkerBlue = Color(0xFF003C8F)
+val BlueGrey = Color(0xFF607D8B)
 private val DarkColorScheme = darkColorScheme(
         primary = Purple80,
         secondary = PurpleGrey80,
