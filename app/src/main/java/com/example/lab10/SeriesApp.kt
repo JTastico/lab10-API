@@ -35,6 +35,7 @@ import com.example.lab10.data.SerieApiService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+
 @Composable
 fun SeriesApp() {
     val urlBase = "http://10.0.2.2:8000/" // o tu IP si usarás un dispositivo externo
